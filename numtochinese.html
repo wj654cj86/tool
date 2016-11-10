@@ -26,6 +26,7 @@
 
 			function transform(s) {
 				var sc = "";
+				var sa = s.split("");
 				var len = s.length;
 				var N = n[bas];
 				var D = d[bas];
@@ -33,7 +34,7 @@
 				//不管是否為零都串接到字串
 				for (var i = 0,
 				    j = len - 1; i < len; i++, j--)
-					sc += N[s.substr(i, 1)] + D[j & 3] + (j & 3 ? "" : w[j >> 2]);
+					sc += N[sa[i]] + D[j % 4] + (j % 4 ? "" : w[j / 4]);
 
 				//將零千零百零十取代為零
 				for (var i = 1; i < 4; i++)
