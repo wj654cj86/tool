@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>數字轉中文</title>
+		<link href="test.ico" rel="icon">
+		<script type="text/javascript">
+			var n = [["〇", "一", "二", "三", "四", "五", "六", "七", "八", "九"], ["零", "壹", "貳", "參", "肆", "伍", "陸", "柒", "捌", "玖"]];
+			var d = [["", "十", "百", "千"], ["", "拾", "佰", "仟"]];
+			var w = ["個", "萬", "億", "兆", "京", "垓", "秭", "穰", "溝", "澗", "正", "載", "極"];
+			var wsize = w.length;
+			var bas = 0;
+			function regulate(s) {
+				s = s.replace(/[^\d]/g, '');
+				while (s.indexOf("0") == 0)
+				s = s.substr(1);
+				return s;
+			}
+
+			function replaceAll(ss, s1, s2) {
+				while (ss.indexOf(s1) != -1)
+				ss = ss.replace(s1, s2);
+				return ss;
+			}
+
+			function transform(s) {
+				var sc = "";
+				var len = s.length;
+
+				//不管是否為零都串接到字串
+				for (var i = 0,
+				    j = len - 1; i < len; i++, j--)
+					sc += n[bas][s.substr(i, 1)] + d[bas][j & 3] + (j & 3 ? "" : w[j >> 2]);
+
+				//將零千零百零十取代為零
+				for (var i = 1; i < 4; i++)
+					sc = replaceAll(sc, n[bas][0] + d[bas][i], n[bas][0]);
+				//將連續零取代為一個零
+				sc = replaceAll(sc, n[bas][0] + n[bas][0], n[bas][0]);
+
+				//將億零萬取代為億零，兆零億取代為兆零，以此類推
+				for (var i = 2; i < wsize; i++)//注意：這邊從"萬"陣列的第2個元素開始
+					sc = replaceAll(sc, w[i] + n[bas][0] + w[i - 1], w[i] + n[bas][0]);
+				//將連續零取代為一個零
+				sc = replaceAll(sc, n[bas][0] + n[bas][0], n[bas][0]);
+
+				//將零個取代為個，零萬取代為萬，零億取代為億，以此類推
+				//"個"具有將末位零移除的功能
+				for (var i = 0; i < wsize; i++)
+					sc = replaceAll(sc, n[bas][0] + w[i], w[i]);
+
+				//將個移除
+				sc = replaceAll(sc, "個", "");
+
+				//如果轉換結果為空字串代表為0，顯示為零
+				if (sc.length == 0)
+					return n[bas][0];
+				return sc;
+			}
+		</script>
+	</head>
+	<body id="pagbody">
+		<form>
+			<input name="nummode" type="radio" onchange="bas=0;" checked>
+			小寫
+			<input name="nummode" type="radio" onchange="bas=1;">
+			大寫
+		</form>
+		<input type="text" id="Digits"/>
+		<br>
+		<input type="button" id="Convert" value="轉換" onclick="Digits.value = regulate(Digits.value); Result.value = transform(Digits.value);"/>
+		<br>
+		<textarea type="text" id="Result" rows="5" readonly></textarea>
+		<script type="text/javascript">
+			Digits.maxLength = Digits.size = wsize * 4;
+			Result.cols = wsize * 5;
+		</script>
+	</body>
+</html>
