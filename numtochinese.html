@@ -27,35 +27,37 @@
 			function transform(s) {
 				var sc = "";
 				var len = s.length;
+				var N = n[bas];
+				var D = d[bas];
 
 				//不管是否為零都串接到字串
 				for (var i = 0,
 				    j = len - 1; i < len; i++, j--)
-					sc += n[bas][s.substr(i, 1)] + d[bas][j & 3] + (j & 3 ? "" : w[j >> 2]);
+					sc += N[s.substr(i, 1)] + D[j & 3] + (j & 3 ? "" : w[j >> 2]);
 
 				//將零千零百零十取代為零
 				for (var i = 1; i < 4; i++)
-					sc = replaceAll(sc, n[bas][0] + d[bas][i], n[bas][0]);
+					sc = replaceAll(sc, N[0] + D[i], N[0]);
 				//將連續零取代為一個零
-				sc = replaceAll(sc, n[bas][0] + n[bas][0], n[bas][0]);
+				sc = replaceAll(sc, N[0] + N[0], N[0]);
 
 				//將億零萬取代為億零，兆零億取代為兆零，以此類推
 				for (var i = 2; i < wsize; i++)//注意：這邊從"萬"陣列的第2個元素開始
-					sc = replaceAll(sc, w[i] + n[bas][0] + w[i - 1], w[i] + n[bas][0]);
+					sc = replaceAll(sc, w[i] + N[0] + w[i - 1], w[i] + N[0]);
 				//將連續零取代為一個零
-				sc = replaceAll(sc, n[bas][0] + n[bas][0], n[bas][0]);
+				sc = replaceAll(sc, N[0] + N[0], N[0]);
 
 				//將零個取代為個，零萬取代為萬，零億取代為億，以此類推
 				//"個"具有將末位零移除的功能
 				for (var i = 0; i < wsize; i++)
-					sc = replaceAll(sc, n[bas][0] + w[i], w[i]);
+					sc = replaceAll(sc, N[0] + w[i], w[i]);
 
 				//將個移除
 				sc = replaceAll(sc, "個", "");
 
 				//如果轉換結果為空字串代表為0，顯示為零
 				if (sc.length == 0)
-					return n[bas][0];
+					return N[0];
 				return sc;
 			}
 		</script>
