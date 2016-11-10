@@ -15,6 +15,8 @@
 				s = s.replace(/[^\d]/g, '');
 				while (s.indexOf("0") == 0)
 				s = s.substr(1);
+				if (s.length == 0)
+					return "0";
 				return s;
 			}
 
@@ -30,6 +32,7 @@
 				var len = s.length;
 				var N = n[bas];
 				var D = d[bas];
+				var z = N[0];
 
 				//不管是否為零都串接到字串
 				for (var i = 0,
@@ -38,27 +41,27 @@
 
 				//將零千零百零十取代為零
 				for (var i = 1; i < 4; i++)
-					sc = replaceAll(sc, N[0] + D[i], N[0]);
+					sc = replaceAll(sc, z + D[i], z);
 				//將連續零取代為一個零
-				sc = replaceAll(sc, N[0] + N[0], N[0]);
+				sc = replaceAll(sc, z + z, z);
 
 				//將億零萬取代為億零，兆零億取代為兆零，以此類推
 				for (var i = 2; i < wsize; i++)//注意：這邊從"萬"陣列的第2個元素開始
-					sc = replaceAll(sc, w[i] + N[0] + w[i - 1], w[i] + N[0]);
+					sc = replaceAll(sc, w[i] + z + w[i - 1], w[i] + z);
 				//將連續零取代為一個零
-				sc = replaceAll(sc, N[0] + N[0], N[0]);
+				sc = replaceAll(sc, z + z, z);
 
 				//將零個取代為個，零萬取代為萬，零億取代為億，以此類推
 				//"個"具有將末位零移除的功能
 				for (var i = 0; i < wsize; i++)
-					sc = replaceAll(sc, N[0] + w[i], w[i]);
+					sc = replaceAll(sc, z + w[i], w[i]);
 
 				//將個移除
 				sc = replaceAll(sc, "個", "");
 
 				//如果轉換結果為空字串代表為0，顯示為零
 				if (sc.length == 0)
-					return N[0];
+					return z;
 				return sc;
 			}
 		</script>
